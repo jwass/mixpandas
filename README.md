@@ -23,8 +23,8 @@ Find each user's average rating over a specified time span.
     27             5.00000
     ...
 
-Mixpandas converts the `time` property of each event to Pandas timestamps enabling Pandas powerful slicing and 
-time series analysis.
+Mixpandas converts the `time` property of each event to Pandas `Timestamp` objects enabling Pandas powerful 
+slicing and time series analysis.
 
     >>> df.set_index('time', inplace=True, drop=False)
     

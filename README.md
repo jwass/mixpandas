@@ -5,7 +5,7 @@ powerful custom analysis. Use `read_events` to query your data. Specify
 event names, date ranges or other filters to control selection.
 Consult the documentation for detailed use.
 
-Mixpanel wraps [Mixpanel's API client](https://mixpanel.com/site_media//api/v2/mixpanel.py) with a few modifications
+Mixpandas wraps [Mixpanel's API client](https://mixpanel.com/site_media//api/v2/mixpanel.py) with a few modifications
 documented in the code.
 
 ### Example

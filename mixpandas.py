@@ -109,9 +109,12 @@ def _export_to_df(data, columns, exclude_mp):
     # If columns is excluded, leave off parameters that start with '$' as
     # these are automatically included in the Mixpanel events and clutter the
     # real data
-    if not columns and exclude_mp:
-        columns = [p for p in parameters if not (p.startswith('$') or
-                                                 p.startswith('mp_'))]
+    if columns is None:
+        if exclude_mp:
+            columns = [p for p in parameters if not (p.startswith('$') or
+                                                     p.startswith('mp_'))]
+        else:
+            columns = parameters
     elif 'time' not in columns:
         columns.append('time')
     df = pd.DataFrame(events, columns=columns)

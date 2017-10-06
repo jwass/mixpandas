@@ -100,6 +100,7 @@ def _export_to_df(data, columns, exclude_mp):
         try:
             event = json.loads(line)
             ev = event['properties']
+            ev[u'event']=event['event']
         except ValueError:  # Not valid JSON
             continue
 

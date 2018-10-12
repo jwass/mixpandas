@@ -201,14 +201,14 @@ def hash_args(args, api_secret):
         if isinstance(a, str):
             args_joined += a.encode('utf-8')
         else:
-            args_joined += str(a)
+            args_joined += str(a).encode('utf-8')
 
         args_joined += b'='
 
         if isinstance(args[a], str):
             args_joined += args[a].encode('utf-8')
         else:
-            args_joined += str(args[a])
+            args_joined += str(args[a]).encode('utf-8')
 
     hash = hashlib.md5(args_joined)
 

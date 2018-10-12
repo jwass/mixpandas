@@ -196,20 +196,16 @@ def hash_args(args, api_secret):
     for a in args:
         if isinstance(args[a], list): args[a] = json.dumps(args[a])
 
-    args_joined = ''
+    args_joined = b''
     for a in sorted(args.keys()):
-        if isinstance(a, bytes):
-            args_joined += a
-        elif isinstance(a, str):
+        if isinstance(a, str):
             args_joined += a.encode('utf-8')
         else:
             args_joined += str(a)
 
-        args_joined += '='
+        args_joined += b'='
 
-        if isinstance(args[a], bytes):
-            args_joined += args[a]
-        elif isinstance(args[a], str):
+        if isinstance(args[a], str):
             args_joined += args[a].encode('utf-8')
         else:
             args_joined += str(args[a])

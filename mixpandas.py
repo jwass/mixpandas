@@ -212,5 +212,5 @@ def hash_args(args, api_secret):
 
     hash = hashlib.md5(args_joined)
 
-    hash.update(api_secret)
+    hash.update(api_secret.encode('utf-8'))
     return hash.hexdigest() 

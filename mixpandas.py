@@ -96,7 +96,7 @@ def _export_to_df(data, columns, exclude_mp):
     # records separated by newlines, where each record is valid JSON.
     # The event parameters are in the properties field
     events = []
-    for line in data.split('\n'):
+    for line in data.split(b'\n'):
         try:
             event = json.loads(line)
             ev = event['properties']

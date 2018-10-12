@@ -198,17 +198,11 @@ def hash_args(args, api_secret):
 
     args_joined = ''
     for a in sorted(args.keys()):
-        if isinstance(a, str):
-            args_joined += a.decode('utf-8')
-        else:
-            args_joined += str(a)
+        args_joined += str(a)
 
         args_joined += '='
 
-        if isinstance(args[a], str):
-            args_joined += args[a].decode('utf-8')
-        else:
-            args_joined += str(args[a])
+        args_joined += str(args[a])
 
     hash = hashlib.md5(args_joined)
 

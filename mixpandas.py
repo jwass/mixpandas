@@ -5,7 +5,7 @@ A library to request data from Mixpanel's Raw Data Export API
 """
 import datetime
 import hashlib
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import time
 try:
     import json
@@ -59,7 +59,7 @@ def read_events(keys, events=None, start=None, end=None,
     if start is None:
         # This default comes from an error message you'll receive if you 
         # try an start date earlier than 7/10/2011
-        start = datetime.date(2011, 07, 10)
+        start = datetime.date(2011, 0o7, 10)
     start = pd.to_datetime(start)
     start_str = start.strftime(date_format)
 
@@ -74,12 +74,12 @@ def read_events(keys, events=None, start=None, end=None,
     }
 
     # Handle when single event passed in as string
-    if isinstance(events, basestring):
+    if isinstance(events, str):
         events = [events]
 
     # Fill the payload with the parameters if they're specified
     params = {'event' : events, 'where' : where, 'bucket' : bucket}
-    for k, v in params.iteritems():
+    for k, v in params.items():
         if v is not None:
             payload[k] = v
 
@@ -96,14 +96,15 @@ def _export_to_df(data, columns, exclude_mp):
     # records separated by newlines, where each record is valid JSON.
     # The event parameters are in the properties field
     events = []
-    for line in data.split('\n'):
+    for line in data.split(b'\n'):
         try:
             event = json.loads(line)
             ev = event['properties']
+            ev['event']=event['event']
         except ValueError:  # Not valid JSON
             continue
 
-        parameters.update(ev.keys())
+        parameters.update(list(ev.keys()))
         events.append(ev)
 
     # If columns is excluded, leave off parameters that start with '$' as
@@ -161,7 +162,7 @@ def request(keys, methods, params, format='json', data_api=False):
     request_url = ('/'.join([url_base, str(VERSION)] + methods) + '/?' + 
                    unicode_urlencode(params))
 
-    request = urllib.urlopen(request_url)
+    request = urllib.request.urlopen(request_url)
     data = request.read()
 
     if data_api:
@@ -176,13 +177,13 @@ def unicode_urlencode(params):
         unicode URL parameters.
     """
     if isinstance(params, dict):
-        params = params.items()
+        params = list(params.items())
     for i, param in enumerate(params):
         if isinstance(param[1], list): 
             params[i] = (param[0], json.dumps(param[1]),)
 
-    return urllib.urlencode(
-        [(k, isinstance(v, unicode) and v.encode('utf-8') or v) 
+    return urllib.parse.urlencode(
+        [(k, isinstance(v, str) and v.encode('utf-8') or v) 
             for k, v in params]
     )
 
@@ -195,21 +196,21 @@ def hash_args(args, api_secret):
     for a in args:
         if isinstance(args[a], list): args[a] = json.dumps(args[a])
 
-    args_joined = ''
+    args_joined = b''
     for a in sorted(args.keys()):
-        if isinstance(a, unicode):
+        if isinstance(a, str):
             args_joined += a.encode('utf-8')
         else:
-            args_joined += str(a)
+            args_joined += str(a).encode('utf-8')
 
-        args_joined += '='
+        args_joined += b'='
 
-        if isinstance(args[a], unicode):
+        if isinstance(args[a], str):
             args_joined += args[a].encode('utf-8')
         else:
-            args_joined += str(args[a])
+            args_joined += str(args[a]).encode('utf-8')
 
     hash = hashlib.md5(args_joined)
 
-    hash.update(api_secret)
+    hash.update(api_secret.encode('utf-8'))
     return hash.hexdigest() 
